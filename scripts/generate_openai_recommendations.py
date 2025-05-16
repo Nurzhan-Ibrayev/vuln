@@ -1,5 +1,3 @@
-mkdir -p scripts
-cat << 'EOF' > scripts/generate_openai_recommendations.py
 import json
 import sys
 import os
@@ -22,7 +20,7 @@ You are a code security expert. The following issue was found by Semgrep:
 - CWE: {cwe}
 - OWASP: {owasp}
 
-Provide a clear and concise recommendation to fix this issue in TypeScript/JavaScript (Express/Sequelize). Use Markdown formatting, include a code example if applicable, and keep it under 100 words. Reference provided URLs if relevant: {', '.join(metadata.get('references', []))}.
+Provide a clear and concise recommendation to fix this issue in Python/Flask (using SQLite if applicable). Use Markdown formatting, include a code example if relevant, and keep it under 100 words. Reference provided URLs if relevant: {', '.join(metadata.get('references', []))}.
 """
     try:
         response = client.chat.completions.create(
@@ -78,4 +76,3 @@ def main():
 
 if __name__ == "__main__":
     main()
-EOF
