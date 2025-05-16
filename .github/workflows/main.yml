@@ -43,7 +43,7 @@ jobs:
 
     - name: Install dependencies
       run: |
-        pip install openai
+        pip install openai python-dotenv
 
     - name: Download semgrep.json artifact
       uses: actions/download-artifact@v4
