@@ -27,3 +27,35 @@ jobs:
       with:
         name: semgrep-results
         path: semgrep.json
+        
+  recommendations:
+    name: Generate OpenAI Recommendations
+    runs-on: ubuntu-latest
+    needs: sast
+
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: Set up Python
+      uses: actions/setup-python@v5
+      with:
+        python-version: '3.11'  # Или твоя версия
+
+    - name: Install dependencies
+      run: |
+        pip install openai
+
+    - name: Download semgrep.json artifact
+      uses: actions/download-artifact@v4
+      with:
+        name: semgrep-results
+
+    - name: Run OpenAI Recommendation Script
+      run: |
+        python scripts/generate_openai_recommendations.py semgrep.json > semgrep_recommendations.md
+
+    - name: Upload Markdown report
+      uses: actions/upload-artifact@v4
+      with:
+        name: semgrep-report-md
+        path: semgrep_recommendations.md
