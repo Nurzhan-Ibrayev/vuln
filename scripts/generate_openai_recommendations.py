@@ -3,11 +3,14 @@ import sys
 import os
 from openai import OpenAI
 from openai import OpenAIError
+from dotenv import load_dotenv
+load_dotenv()
+
 
 def get_openai_recommendation(issue):
-    """Отправляет данные об уязвимости в Open AI и возвращает рекомендацию."""
     client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
     metadata = issue.get("extra", {}).get("metadata", {})
+    severity = issue.get("extra", {}).get("severity", "UNKNOWN")
     cwe = ", ".join(metadata.get("cwe", [])) if metadata.get("cwe") else "N/A"
     owasp = ", ".join(metadata.get("owasp", [])) if metadata.get("owasp") else "N/A"
     prompt = f"""
@@ -16,7 +19,7 @@ You are a code security expert. The following issue was found by Semgrep:
 - Line: {issue['start']['line']}
 - Issue: {issue['extra']['message']}
 - Rule: {issue['check_id']}
-- Severity: {issue['severity']}
+- Severity: {severity}
 - CWE: {cwe}
 - OWASP: {owasp}
 
@@ -39,7 +42,6 @@ Provide a clear and concise recommendation to fix this issue in Python/Flask (us
         return f"**Error**: Unexpected error: {str(e)}"
 
 def main():
-    """Читает semgrep.json и генерирует рекомендации."""
     if len(sys.argv) != 2:
         print("Usage: python generate_openai_recommendations.py <semgrep.json>")
         sys.exit(1)
@@ -50,19 +52,21 @@ def main():
     with open(input_file) as f:
         data = json.load(f)
     recommendations = []
-    cache = {}  # Кэш для повторяющихся уязвимостей
-    for issue in data.get("results", [])[:10]:  # Ограничение до 10
-        if issue["severity"] in ["ERROR", "WARNING"]:
+    cache = {}
+    for issue in data.get("results", [])[:10]:
+        severity = issue.get("extra", {}).get("severity")
+        if severity in ["ERROR", "WARNING"]:
             cache_key = f"{issue['check_id']}:{issue['extra']['message']}"
             if cache_key in cache:
                 reco = cache[cache_key]
             else:
                 reco = get_openai_recommendation(issue)
                 cache[cache_key] = reco
+
             recommendations.append(
                 f"### Issue in {issue['path']}:{issue['start']['line']}\n"
                 f"**Rule**: {issue['check_id']}\n"
-                f"**Severity**: {issue['severity']}\n"
+                f"**Severity**: {severity}\n"
                 f"**Message**: {issue['extra']['message']}\n"
                 f"**Recommendation**:\n{reco}\n"
             )
