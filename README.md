@@ -34,7 +34,7 @@ This project demonstrates the implementation of static testing within modern CI/
 
 1. **Clone this repository**
    ```bash
-   git clone https://github.com/[your-username]/static-testing-project.git
+   git clone https://github.com/[your-username]/vuln.git
    cd static-testing-project
    ```
 
@@ -85,21 +85,6 @@ The project includes a complete GitHub Actions workflow that:
 3. Commit your changes (`git commit -am 'Add new feature'`)
 4. Push to the branch (`git push origin feature/improvement`)
 5. Create a Pull Request
-
-
-## 🙋‍♂️ Author
-
-**Nurzhan Ibrayev**  
-Computer Science and Engineering, CSE-2405M  
-Astana IT University
-
-## 📞 Support
-
-If you encounter any issues or have questions:
-
-1. Check the [Issues](https://github.com/[your-username]/static-testing-project/issues) page
-2. Review the troubleshooting section below
-3. Create a new issue with detailed description
 
 
 ## 🔗 Useful Links
